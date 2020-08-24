@@ -1,7 +1,7 @@
 // キャッシュファイルの指定
-var CACHE_NAME = 'pwa-sample-caches';
+var CACHE_NAME = 'paper-calc-caches';
 var urlsToCache = [
-    '/poster-keisuke.github.io/',
+    '/riki113.github.io/Paper-Calculator/',
 ];
 
 // インストール処理
