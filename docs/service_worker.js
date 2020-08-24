@@ -1,7 +1,7 @@
 // キャッシュファイルの指定
 var CACHE_NAME = 'paper-calc-caches';
 var urlsToCache = [
-    '/riki113.github.io/Paper-Calculator/',
+    '/riki113.github.io/',
 ];
 
 // インストール処理
