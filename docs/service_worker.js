@@ -1,6 +1,7 @@
 // キャッシュファイルの指定
-var CACHE_NAME = 'paper-calc-caches';
-var urlsToCache = [
+const CACHE_VERSION = 'v1';
+const CACHE_NAME = `${registration.scope}!${CACHE_VERSION}`;
+const urlsToCache = [
     '.',
 ];
 
