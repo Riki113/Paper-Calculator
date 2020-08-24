@@ -10,9 +10,12 @@
   </head>
   <body>
     <div id="app">
-        <p>{{ message }}</p>
-        <button v-on:click="reverseMessage">Reverse Message</button>
-     </div>
+        <p>値段<input type="number" v-model.number="price"></p>
+        <p>箱数<input type="number" v-model.number="boxes"></p>
+        <p>組数<input type="number" v-model.number="pairs"></p>
+        <p>1円あたりの組数(数字が大きいほどお得)</p>
+        <p>{{ result }}</p>
+    </div>
     <script>
     <!-- service workerの登録関係 -->
     if ('serviceWorker' in navigator) {
@@ -24,16 +27,28 @@
     }
     <!-- vue.jsの設定関係 -->
     var app = new Vue({
-      el: '#app',
-      data: {
-        message: 'Hello Vue!'
-      },
-      methods: {
-        reverseMessage: function () {
-          this.message = this.message.split('').reverse().join('')
+        el: '#app',
+        computed: {
+            result: function () {
+                var cp = this.boxes * this.pairs / this.price
+                return roundDigit(cp, 2)
+            }
+        },
+        data: {
+            price: 300,
+            boxes: 5,
+            pairs: 150
         }
-      }
     });
+    /**
+     * 任意の桁で四捨五入する関数
+     * @param {number} value 四捨五入する数値
+     * @param {number} digit どの桁で四捨五入するか（1→小数点第1位, 2→小数点第2位, ...）
+     * @return {number} 四捨五入した値
+     */
+    function roundDigit(value, digit) {
+        return Math.round(value * Math.pow(10, digit)) / Math.pow(10, digit);
+    }
     </script>
   </body>
 </html>
