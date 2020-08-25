@@ -19,7 +19,7 @@
         <p>{{ result }}</p>
     </div>
     <script>
-    <!-- service workerの登録関係 -->
+    // service workerの登録
     if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service_worker.js').then(function(registration) {
         console.log('ServiceWorker registration successful with scope: ', registration.scope);
@@ -27,7 +27,7 @@
         console.log('ServiceWorker registration failed: ', err);
     });
     }
-    <!-- vue.jsの設定関係 -->
+    // vue.jsの設定
     var app = new Vue({
         el: '#app',
         computed: {
