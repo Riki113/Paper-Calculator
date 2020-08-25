@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
@@ -9,8 +10,9 @@
     <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon-180x180.png">
     <link rel="icon" type="image/png" sizes="192x192" href="images/android-chrome-192x192.png">
     <title>Paper Calculator</title>
-  </head>
-  <body>
+</head>
+
+<body>
     <div id="app">
         <p>値段<input type="number" v-model.number="price"></p>
         <p>箱数<input type="number" v-model.number="boxes"></p>
@@ -19,38 +21,39 @@
         <p>{{ result }}</p>
     </div>
     <script>
-    // service workerの登録
-    if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service_worker.js').then(function(registration) {
-        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-    }).catch(function(err) {
-        console.log('ServiceWorker registration failed: ', err);
-    });
-    }
-    // vue.jsの設定
-    var app = new Vue({
-        el: '#app',
-        computed: {
-            result: function () {
-                var cp = this.boxes * this.pairs / this.price
-                return roundDigit(cp, 2)
-            }
-        },
-        data: {
-            price: 300,
-            boxes: 5,
-            pairs: 150
+        // service workerの登録
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service_worker.js').then(function (registration) {
+                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+            }).catch(function (err) {
+                console.log('ServiceWorker registration failed: ', err);
+            });
         }
-    });
-    /**
-     * 任意の桁で四捨五入する関数
-     * @param {number} value 四捨五入する数値
-     * @param {number} digit どの桁で四捨五入するか（1→小数点第1位, 2→小数点第2位, ...）
-     * @return {number} 四捨五入した値
-     */
-    function roundDigit(value, digit) {
-        return Math.round(value * Math.pow(10, digit)) / Math.pow(10, digit);
-    }
+        // vue.jsの設定
+        var app = new Vue({
+            el: '#app',
+            computed: {
+                result: function () {
+                    var cp = this.boxes * this.pairs / this.price
+                    return roundDigit(cp, 2)
+                }
+            },
+            data: {
+                price: 300,
+                boxes: 5,
+                pairs: 150
+            }
+        });
+        /**
+         * 任意の桁で四捨五入する関数
+         * @param {number} value 四捨五入する数値
+         * @param {number} digit どの桁で四捨五入するか（1→小数点第1位, 2→小数点第2位, ...）
+         * @return {number} 四捨五入した値
+         */
+        function roundDigit(value, digit) {
+            return Math.round(value * Math.pow(10, digit)) / Math.pow(10, digit);
+        }
     </script>
-  </body>
+</body>
+
 </html>
