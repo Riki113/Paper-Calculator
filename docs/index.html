@@ -9,6 +9,7 @@
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon-180x180.png">
     <link rel="icon" type="image/png" sizes="192x192" href="images/android-chrome-192x192.png">
+    <link rel="stylesheet" href="css/style.css">
     <title>Paper Calculator</title>
 </head>
 
@@ -18,7 +19,28 @@
         <p>箱数<input type="number" v-model.number="boxes"></p>
         <p>組数<input type="number" v-model.number="pairs"></p>
         <p>1円あたりの組数(数字が大きいほどお得)</p>
-        <p>{{ result }}</p>
+        <p><button v-on:click="addRow">+</button>{{ result }}組/円</p>
+        <table>
+            <thead>
+                <tr>
+                    <th @click="sortBy('CP')" :class="sortedClass('CP')">組/円</th>
+                    <th @click="sortBy('Price')" :class="sortedClass('Price')">値段</th>
+                    <th @click="sortBy('Boxes')" :class="sortedClass('Boxes')">箱数</th>
+                    <th @click="sortBy('Pairs')" :class="sortedClass('Pairs')">組数</th>
+                    <th>削除</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr v-for="row in eventedAction">
+                    <td>{{row.CP}}</td>
+                    <td>{{row.Price}}</td>
+                    <td>{{row.Boxes}}</td>
+                    <td>{{row.Pairs}}</td>
+                    <td><button v-on:click="delRow(row)">-</button></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
     <script>
         // service workerの登録
@@ -29,6 +51,15 @@
                 console.log('ServiceWorker registration failed: ', err);
             });
         }
+
+        /*
+        var items = [
+            { 'CP': '2.5', 'Price': '300', 'Boxes': '5', 'Pairs': '150' },
+            { 'CP': '2.1', 'Price': '350', 'Boxes': '4', 'Pairs': '130' },
+            { 'CP': '3.2', 'Price': '250', 'Boxes': '6', 'Pairs': '200' }
+        ];
+        */
+
         // vue.jsの設定
         var app = new Vue({
             el: '#app',
@@ -36,12 +67,48 @@
                 result: function () {
                     var cp = this.boxes * this.pairs / this.price
                     return roundDigit(cp, 2)
+                },
+                eventedAction: function () {
+                    let list = this.items.slice();
+
+                    // ソート実施
+                    if (this.sort.key) {
+                        list.sort((a, b) => {
+                            a = a[this.sort.key];
+                            b = b[this.sort.key];
+                            return (a === b ? 0 : a > b ? 1 : -1) * (this.sort.isAsc ? 1 : -1);
+                        });
+                    }
+
+                    return list;
+                }
+            },
+            methods: {
+                // sort用キーをセットし、昇順・降順を入れ替える
+                sortBy: function (key) {
+                    this.sort.isAsc = this.sort.key === key ? !this.sort.isAsc : false;
+                    this.sort.key = key;
+                },
+                sortedClass: function (key) {
+                    return this.sort.key === key ? `sorted ${this.sort.isAsc ? 'asc' : 'desc'}` : '';
+                },
+                addRow: function () {
+                    this.items.push({ 'CP': this.result, 'Price': this.price, 'Boxes': this.boxes, 'Pairs': this.pairs });
+                },
+                delRow: function (row) {
+                    var index = this.items.indexOf(row);
+                    this.items.splice(index, 1);
                 }
             },
             data: {
                 price: 300,
                 boxes: 5,
-                pairs: 150
+                pairs: 150,
+                items: items = [],
+                sort: {
+                    key: '', // ソートキー
+                    isAsc: false // 昇順ならtrue,降順ならfalse
+                }
             }
         });
         /**
