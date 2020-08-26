@@ -15,9 +15,9 @@
 
 <body>
     <div id="app">
-        <p>値段<input type="number" v-model.number="price"></p>
-        <p>箱数<input type="number" v-model.number="boxes"></p>
-        <p>組数<input type="number" v-model.number="pairs"></p>
+        <p>値段<input type="number" v-model.number="price" min="1"></p>
+        <p>箱数<input type="number" v-model.number="boxes" min="1"></p>
+        <p>組数<input type="number" v-model.number="pairs" min="1"></p>
         <p>1円あたりの組数(数字が大きいほどお得)</p>
         <p><button v-on:click="addRow">+</button>{{ result }}組/円</p>
         <table>
@@ -65,8 +65,13 @@
             el: '#app',
             computed: {
                 result: function () {
-                    var cp = this.boxes * this.pairs / this.price
-                    return roundDigit(cp, 2)
+                    var cp = this.boxes * this.pairs / this.price;
+                    if (cp == 'Infinity') {
+                        return 0;
+                    }
+                    else {
+                        return roundDigit(cp, 2);
+                    }
                 },
                 eventedAction: function () {
                     let list = this.items.slice();
@@ -106,7 +111,7 @@
                 pairs: 150,
                 items: items = [],
                 sort: {
-                    key: '', // ソートキー
+                    key: 'CP', // ソートキー
                     isAsc: false // 昇順ならtrue,降順ならfalse
                 }
             }
