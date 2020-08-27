@@ -15,7 +15,7 @@
 
 <body>
     <div id="appNutrition">
-        <p>栄養</p>
+        <h3>栄養</h3>
         <p>値段<input type="number" v-model.number="price" min="1"></p>
         <p>内容量<input type="number" v-model.number="total" min="1"></p>
         <p>容量(成分表示)<input type="number" v-model.number="seibun" min="1"></p>
@@ -46,9 +46,8 @@
             </tbody>
         </table>
     </div>
-    <hr>
     <div id="appTissue">
-        <p>ティッシュボックス</p>
+        <h3>ティッシュボックス</h3>
         <p>値段<input type="number" v-model.number="price" min="1"></p>
         <p>箱数<input type="number" v-model.number="boxes" min="1"></p>
         <p>組数<input type="number" v-model.number="pairs" min="1"></p>
@@ -76,9 +75,8 @@
             </tbody>
         </table>
     </div>
-    <hr>
     <div id="appToipe">
-        <p>トイレットペーパー</p>
+        <h3>トイレットペーパー</h3>
         <p>値段<input type="number" v-model.number="price" min="1"></p>
         <p>巻数<input type="number" v-model.number="rolls" min="1"></p>
         <p>メートル<input type="number" v-model.number="meters" min="1"></p>
@@ -115,9 +113,9 @@
 
     <script>
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service_worker.js').then(function (registration) {
+            navigator.serviceWorker.register('service_worker.js').then(function(registration) {
                 console.log('ServiceWorker registration successful with scope: ', registration.scope);
-            }).catch(function (err) {
+            }).catch(function(err) {
                 console.log('ServiceWorker registration failed: ', err);
             });
         }
@@ -125,16 +123,15 @@
         var appNutrition = new Vue({
             el: '#appNutrition',
             computed: {
-                result: function () {
+                result: function() {
                     var cp = this.price / (this.total / this.seibun * this.nutrition);
                     if (cp == 'Infinity') {
                         return 0;
-                    }
-                    else {
+                    } else {
                         return roundDigit(cp, 2);
                     }
                 },
-                eventedAction: function () {
+                eventedAction: function() {
                     let list = this.items.slice();
                     // ソート実施
                     if (this.sort.key) {
@@ -149,17 +146,23 @@
             },
             methods: {
                 // sort用キーをセットし、昇順・降順を入れ替える
-                sortBy: function (key) {
+                sortBy: function(key) {
                     this.sort.isAsc = this.sort.key === key ? !this.sort.isAsc : false;
                     this.sort.key = key;
                 },
-                sortedClass: function (key) {
+                sortedClass: function(key) {
                     return this.sort.key === key ? `sorted ${this.sort.isAsc ? 'asc' : 'desc'}` : '';
                 },
-                addRow: function () {
-                    this.items.push({ 'CP': this.result, 'Price': this.price, 'Total': this.total, 'Seibun': this.seibun, 'Nutrition': this.nutrition });
+                addRow: function() {
+                    this.items.push({
+                        'CP': this.result,
+                        'Price': this.price,
+                        'Total': this.total,
+                        'Seibun': this.seibun,
+                        'Nutrition': this.nutrition
+                    });
                 },
-                delRow: function (row) {
+                delRow: function(row) {
                     var index = this.items.indexOf(row);
                     this.items.splice(index, 1);
                 }
@@ -180,16 +183,15 @@
         var appTissue = new Vue({
             el: '#appTissue',
             computed: {
-                result: function () {
+                result: function() {
                     var cp = this.boxes * this.pairs / this.price;
                     if (cp == 'Infinity') {
                         return 0;
-                    }
-                    else {
+                    } else {
                         return roundDigit(cp, 2);
                     }
                 },
-                eventedAction: function () {
+                eventedAction: function() {
                     let list = this.items.slice();
                     // ソート実施
                     if (this.sort.key) {
@@ -204,17 +206,22 @@
             },
             methods: {
                 // sort用キーをセットし、昇順・降順を入れ替える
-                sortBy: function (key) {
+                sortBy: function(key) {
                     this.sort.isAsc = this.sort.key === key ? !this.sort.isAsc : false;
                     this.sort.key = key;
                 },
-                sortedClass: function (key) {
+                sortedClass: function(key) {
                     return this.sort.key === key ? `sorted ${this.sort.isAsc ? 'asc' : 'desc'}` : '';
                 },
-                addRow: function () {
-                    this.items.push({ 'CP': this.result, 'Price': this.price, 'Boxes': this.boxes, 'Pairs': this.pairs });
+                addRow: function() {
+                    this.items.push({
+                        'CP': this.result,
+                        'Price': this.price,
+                        'Boxes': this.boxes,
+                        'Pairs': this.pairs
+                    });
                 },
-                delRow: function (row) {
+                delRow: function(row) {
                     var index = this.items.indexOf(row);
                     this.items.splice(index, 1);
                 }
@@ -234,19 +241,18 @@
         var appToipe = new Vue({
             el: '#appToipe',
             computed: {
-                result: function () {
+                result: function() {
                     var cp = this.rolls * this.meters / this.price;
                     if (this.picked == 'ダブル') {
                         cp = cp * 2;
                     }
                     if (cp == 'Infinity') {
                         return 0;
-                    }
-                    else {
+                    } else {
                         return roundDigit(cp, 2);
                     }
                 },
-                eventedAction: function () {
+                eventedAction: function() {
                     let list = this.items.slice();
                     // ソート実施
                     if (this.sort.key) {
@@ -261,17 +267,23 @@
             },
             methods: {
                 // sort用キーをセットし、昇順・降順を入れ替える
-                sortBy: function (key) {
+                sortBy: function(key) {
                     this.sort.isAsc = this.sort.key === key ? !this.sort.isAsc : false;
                     this.sort.key = key;
                 },
-                sortedClass: function (key) {
+                sortedClass: function(key) {
                     return this.sort.key === key ? `sorted ${this.sort.isAsc ? 'asc' : 'desc'}` : '';
                 },
-                addRow: function () {
-                    this.items.push({ 'CP': this.result, 'Price': this.price, 'Rolls': this.rolls, 'Meters': this.meters, 'SD': this.picked });
+                addRow: function() {
+                    this.items.push({
+                        'CP': this.result,
+                        'Price': this.price,
+                        'Rolls': this.rolls,
+                        'Meters': this.meters,
+                        'SD': this.picked
+                    });
                 },
-                delRow: function (row) {
+                delRow: function(row) {
                     var index = this.items.indexOf(row);
                     this.items.splice(index, 1);
                 }
@@ -290,11 +302,11 @@
         });
 
         /**
-        * 任意の桁で四捨五入する関数
-        * @param {number} value 四捨五入する数値
-        * @param {number} digit どの桁で四捨五入するか（1→小数点第1位, 2→小数点第2位, ...）
-        * @return {number} 四捨五入した値
-        */
+         * 任意の桁で四捨五入する関数
+         * @param {number} value 四捨五入する数値
+         * @param {number} digit どの桁で四捨五入するか（1→小数点第1位, 2→小数点第2位, ...）
+         * @return {number} 四捨五入した値
+         */
         function roundDigit(value, digit) {
             return Math.round(value * Math.pow(10, digit)) / Math.pow(10, digit);
         }
