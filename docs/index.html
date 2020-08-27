@@ -14,7 +14,41 @@
 </head>
 
 <body>
-    <div id="app">
+    <div id="appNutrition">
+        <p>栄養</p>
+        <p>値段<input type="number" v-model.number="price" min="1"></p>
+        <p>内容量<input type="number" v-model.number="total" min="1"></p>
+        <p>容量(成分表示)<input type="number" v-model.number="seibun" min="1"></p>
+        <p>栄養(成分表示)<input type="number" v-model.number="nutrition" min="1"></p>
+        <p>1gあたりの値段(数字が小さいほどお得)</p>
+        <p><button v-on:click="addRow">+</button>{{ result }}円/g</p>
+        <table>
+            <thead>
+                <tr>
+                    <th @click="sortBy('CP')" :class="sortedClass('CP')">円/g</th>
+                    <th @click="sortBy('Price')" :class="sortedClass('Price')">値段</th>
+                    <th @click="sortBy('Total')" :class="sortedClass('Total')">内容量</th>
+                    <th @click="sortBy('Seibun')" :class="sortedClass('Seibun')">容量</th>
+                    <th @click="sortBy('Nutrition')" :class="sortedClass('Nutrition')">栄養</th>
+                    <th>削除</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr v-for="row in eventedAction">
+                    <td>{{row.CP}}</td>
+                    <td>{{row.Price}}</td>
+                    <td>{{row.Total}}</td>
+                    <td>{{row.Seibun}}</td>
+                    <td>{{row.Nutrition}}</td>
+                    <td><button v-on:click="delRow(row)">-</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <hr>
+    <div id="appTissue">
+        <p>ティッシュボックス</p>
         <p>値段<input type="number" v-model.number="price" min="1"></p>
         <p>箱数<input type="number" v-model.number="boxes" min="1"></p>
         <p>組数<input type="number" v-model.number="pairs" min="1"></p>
@@ -42,8 +76,44 @@
             </tbody>
         </table>
     </div>
+    <hr>
+    <div id="appToipe">
+        <p>トイレットペーパー</p>
+        <p>値段<input type="number" v-model.number="price" min="1"></p>
+        <p>巻数<input type="number" v-model.number="rolls" min="1"></p>
+        <p>メートル<input type="number" v-model.number="meters" min="1"></p>
+        <input type="radio" id="single" value="シングル" v-model="picked">
+        <label for="single">シングル</label>
+        <input type="radio" id="double" value="ダブル" v-model="picked">
+        <label for="double">ダブル</label>
+        <p>1円あたりの長さ(数字が大きいほどお得)</p>
+        <p><button v-on:click="addRow">+</button>{{ result }}m/円</p>
+        <table>
+            <thead>
+                <tr>
+                    <th @click="sortBy('CP')" :class="sortedClass('CP')">組/円</th>
+                    <th @click="sortBy('Price')" :class="sortedClass('Price')">値段</th>
+                    <th @click="sortBy('Rolls')" :class="sortedClass('Rolls')">巻数</th>
+                    <th @click="sortBy('Meters')" :class="sortedClass('Meters')">m</th>
+                    <th @click="sortBy('SD')" :class="sortedClass('SD')">S/D</th>
+                    <th>削除</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr v-for="row in eventedAction">
+                    <td>{{row.CP}}</td>
+                    <td>{{row.Price}}</td>
+                    <td>{{row.Rolls}}</td>
+                    <td>{{row.Meters}}</td>
+                    <td>{{row.SD}}</td>
+                    <td><button v-on:click="delRow(row)">-</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
     <script>
-        // service workerの登録
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('service_worker.js').then(function (registration) {
                 console.log('ServiceWorker registration successful with scope: ', registration.scope);
@@ -52,17 +122,63 @@
             });
         }
 
-        /*
-        var items = [
-            { 'CP': '2.5', 'Price': '300', 'Boxes': '5', 'Pairs': '150' },
-            { 'CP': '2.1', 'Price': '350', 'Boxes': '4', 'Pairs': '130' },
-            { 'CP': '3.2', 'Price': '250', 'Boxes': '6', 'Pairs': '200' }
-        ];
-        */
+        var appNutrition = new Vue({
+            el: '#appNutrition',
+            computed: {
+                result: function () {
+                    var cp = this.price / (this.total / this.seibun * this.nutrition);
+                    if (cp == 'Infinity') {
+                        return 0;
+                    }
+                    else {
+                        return roundDigit(cp, 2);
+                    }
+                },
+                eventedAction: function () {
+                    let list = this.items.slice();
+                    // ソート実施
+                    if (this.sort.key) {
+                        list.sort((a, b) => {
+                            a = a[this.sort.key];
+                            b = b[this.sort.key];
+                            return (a === b ? 0 : a > b ? 1 : -1) * (this.sort.isAsc ? 1 : -1);
+                        });
+                    }
+                    return list;
+                }
+            },
+            methods: {
+                // sort用キーをセットし、昇順・降順を入れ替える
+                sortBy: function (key) {
+                    this.sort.isAsc = this.sort.key === key ? !this.sort.isAsc : false;
+                    this.sort.key = key;
+                },
+                sortedClass: function (key) {
+                    return this.sort.key === key ? `sorted ${this.sort.isAsc ? 'asc' : 'desc'}` : '';
+                },
+                addRow: function () {
+                    this.items.push({ 'CP': this.result, 'Price': this.price, 'Total': this.total, 'Seibun': this.seibun, 'Nutrition': this.nutrition });
+                },
+                delRow: function (row) {
+                    var index = this.items.indexOf(row);
+                    this.items.splice(index, 1);
+                }
+            },
+            data: {
+                price: 4000,
+                total: 1000,
+                seibun: 20,
+                nutrition: 15,
+                items: items = [],
+                sort: {
+                    key: 'CP', // ソートキー
+                    isAsc: true // 昇順ならtrue,降順ならfalse
+                }
+            }
+        });
 
-        // vue.jsの設定
-        var app = new Vue({
-            el: '#app',
+        var appTissue = new Vue({
+            el: '#appTissue',
             computed: {
                 result: function () {
                     var cp = this.boxes * this.pairs / this.price;
@@ -75,7 +191,6 @@
                 },
                 eventedAction: function () {
                     let list = this.items.slice();
-
                     // ソート実施
                     if (this.sort.key) {
                         list.sort((a, b) => {
@@ -84,7 +199,6 @@
                             return (a === b ? 0 : a > b ? 1 : -1) * (this.sort.isAsc ? 1 : -1);
                         });
                     }
-
                     return list;
                 }
             },
@@ -116,12 +230,71 @@
                 }
             }
         });
+
+        var appToipe = new Vue({
+            el: '#appToipe',
+            computed: {
+                result: function () {
+                    var cp = this.rolls * this.meters / this.price;
+                    if (this.picked == 'ダブル') {
+                        cp = cp * 2;
+                    }
+                    if (cp == 'Infinity') {
+                        return 0;
+                    }
+                    else {
+                        return roundDigit(cp, 2);
+                    }
+                },
+                eventedAction: function () {
+                    let list = this.items.slice();
+                    // ソート実施
+                    if (this.sort.key) {
+                        list.sort((a, b) => {
+                            a = a[this.sort.key];
+                            b = b[this.sort.key];
+                            return (a === b ? 0 : a > b ? 1 : -1) * (this.sort.isAsc ? 1 : -1);
+                        });
+                    }
+                    return list;
+                }
+            },
+            methods: {
+                // sort用キーをセットし、昇順・降順を入れ替える
+                sortBy: function (key) {
+                    this.sort.isAsc = this.sort.key === key ? !this.sort.isAsc : false;
+                    this.sort.key = key;
+                },
+                sortedClass: function (key) {
+                    return this.sort.key === key ? `sorted ${this.sort.isAsc ? 'asc' : 'desc'}` : '';
+                },
+                addRow: function () {
+                    this.items.push({ 'CP': this.result, 'Price': this.price, 'Rolls': this.rolls, 'Meters': this.meters, 'SD': this.picked });
+                },
+                delRow: function (row) {
+                    var index = this.items.indexOf(row);
+                    this.items.splice(index, 1);
+                }
+            },
+            data: {
+                price: 500,
+                rolls: 12,
+                meters: 25,
+                picked: 'ダブル',
+                items: items = [],
+                sort: {
+                    key: 'CP', // ソートキー
+                    isAsc: false // 昇順ならtrue,降順ならfalse
+                }
+            }
+        });
+
         /**
-         * 任意の桁で四捨五入する関数
-         * @param {number} value 四捨五入する数値
-         * @param {number} digit どの桁で四捨五入するか（1→小数点第1位, 2→小数点第2位, ...）
-         * @return {number} 四捨五入した値
-         */
+        * 任意の桁で四捨五入する関数
+        * @param {number} value 四捨五入する数値
+        * @param {number} digit どの桁で四捨五入するか（1→小数点第1位, 2→小数点第2位, ...）
+        * @return {number} 四捨五入した値
+        */
         function roundDigit(value, digit) {
             return Math.round(value * Math.pow(10, digit)) / Math.pow(10, digit);
         }
