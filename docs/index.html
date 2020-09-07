@@ -15,100 +15,106 @@
 
 <body>
     <div id="appNutrition">
-        <h3>栄養</h3>
-        <p>値段<input type="number" v-model.number="price" min="1"></p>
-        <p>内容量<input type="number" v-model.number="total" min="1"></p>
-        <p>容量(成分表示)<input type="number" v-model.number="seibun" min="1"></p>
-        <p>栄養(成分表示)<input type="number" v-model.number="nutrition" min="1"></p>
-        <p>1gあたりの値段(数字が小さいほどお得)</p>
-        <p><button v-on:click="addRow">+</button>{{ result }}円/g</p>
-        <table>
-            <thead>
-                <tr>
-                    <th @click="sortBy('CP')" :class="sortedClass('CP')">円/g</th>
-                    <th @click="sortBy('Price')" :class="sortedClass('Price')">値段</th>
-                    <th @click="sortBy('Total')" :class="sortedClass('Total')">内容量</th>
-                    <th @click="sortBy('Seibun')" :class="sortedClass('Seibun')">容量</th>
-                    <th @click="sortBy('Nutrition')" :class="sortedClass('Nutrition')">栄養</th>
-                    <th>削除</th>
-                </tr>
-            </thead>
+        <button @click="isOpened=!isOpened" class="title-button" :class="{ '_state-open': isOpened }">栄養</button>
+        <div v-show="isOpened">
+            <p>値段<input type="number" v-model.number="price" min="1"></p>
+            <p>内容量<input type="number" v-model.number="total" min="1"></p>
+            <p>容量(成分表示)<input type="number" v-model.number="seibun" min="1"></p>
+            <p>栄養(成分表示)<input type="number" v-model.number="nutrition" min="1"></p>
+            <p>1gあたりの値段(数字が小さいほどお得)</p>
+            <p><button @click="addRow" class="small-button">+</button>{{ result }}円/g</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th @click="sortBy('CP')" :class="sortedClass('CP')">円/g</th>
+                        <th @click="sortBy('Price')" :class="sortedClass('Price')">値段</th>
+                        <th @click="sortBy('Total')" :class="sortedClass('Total')">内容量</th>
+                        <th @click="sortBy('Seibun')" :class="sortedClass('Seibun')">容量</th>
+                        <th @click="sortBy('Nutrition')" :class="sortedClass('Nutrition')">栄養</th>
+                        <th>削除</th>
+                    </tr>
+                </thead>
 
-            <tbody>
-                <tr v-for="row in eventedAction">
-                    <td>{{row.CP}}</td>
-                    <td>{{row.Price}}</td>
-                    <td>{{row.Total}}</td>
-                    <td>{{row.Seibun}}</td>
-                    <td>{{row.Nutrition}}</td>
-                    <td><button v-on:click="delRow(row)">-</button></td>
-                </tr>
-            </tbody>
-        </table>
+                <tbody>
+                    <tr v-for="row in eventedAction">
+                        <td>{{row.CP}}</td>
+                        <td>{{row.Price}}</td>
+                        <td>{{row.Total}}</td>
+                        <td>{{row.Seibun}}</td>
+                        <td>{{row.Nutrition}}</td>
+                        <td><button @click="delRow(row)" class="small-button">-</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
     <div id="appTissue">
-        <h3>ティッシュボックス</h3>
-        <p>値段<input type="number" v-model.number="price" min="1"></p>
-        <p>箱数<input type="number" v-model.number="boxes" min="1"></p>
-        <p>組数<input type="number" v-model.number="pairs" min="1"></p>
-        <p>1円あたりの組数(数字が大きいほどお得)</p>
-        <p><button v-on:click="addRow">+</button>{{ result }}組/円</p>
-        <table>
-            <thead>
-                <tr>
-                    <th @click="sortBy('CP')" :class="sortedClass('CP')">組/円</th>
-                    <th @click="sortBy('Price')" :class="sortedClass('Price')">値段</th>
-                    <th @click="sortBy('Boxes')" :class="sortedClass('Boxes')">箱数</th>
-                    <th @click="sortBy('Pairs')" :class="sortedClass('Pairs')">組数</th>
-                    <th>削除</th>
-                </tr>
-            </thead>
+        <button @click="isOpened=!isOpened" class="title-button" :class="{ '_state-open': isOpened }">ティッシュボックス</button>
+        <div v-show="isOpened">
+            <p>値段<input type="number" v-model.number="price" min="1"></p>
+            <p>箱数<input type="number" v-model.number="boxes" min="1"></p>
+            <p>組数<input type="number" v-model.number="pairs" min="1"></p>
+            <p>1円あたりの組数(数字が大きいほどお得)</p>
+            <p><button @click="addRow" class="small-button">+</button>{{ result }}組/円</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th @click="sortBy('CP')" :class="sortedClass('CP')">組/円</th>
+                        <th @click="sortBy('Price')" :class="sortedClass('Price')">値段</th>
+                        <th @click="sortBy('Boxes')" :class="sortedClass('Boxes')">箱数</th>
+                        <th @click="sortBy('Pairs')" :class="sortedClass('Pairs')">組数</th>
+                        <th>削除</th>
+                    </tr>
+                </thead>
 
-            <tbody>
-                <tr v-for="row in eventedAction">
-                    <td>{{row.CP}}</td>
-                    <td>{{row.Price}}</td>
-                    <td>{{row.Boxes}}</td>
-                    <td>{{row.Pairs}}</td>
-                    <td><button v-on:click="delRow(row)">-</button></td>
-                </tr>
-            </tbody>
-        </table>
+                <tbody>
+                    <tr v-for="row in eventedAction">
+                        <td>{{row.CP}}</td>
+                        <td>{{row.Price}}</td>
+                        <td>{{row.Boxes}}</td>
+                        <td>{{row.Pairs}}</td>
+                        <td><button @click="delRow(row)" class="small-button">-</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
     <div id="appToipe">
-        <h3>トイレットペーパー</h3>
-        <p>値段<input type="number" v-model.number="price" min="1"></p>
-        <p>巻数<input type="number" v-model.number="rolls" min="1"></p>
-        <p>メートル<input type="number" v-model.number="meters" min="1"></p>
-        <input type="radio" id="single" value="シングル" v-model="picked">
-        <label for="single">シングル</label>
-        <input type="radio" id="double" value="ダブル" v-model="picked">
-        <label for="double">ダブル</label>
-        <p>1円あたりの長さ(数字が大きいほどお得)</p>
-        <p><button v-on:click="addRow">+</button>{{ result }}m/円</p>
-        <table>
-            <thead>
-                <tr>
-                    <th @click="sortBy('CP')" :class="sortedClass('CP')">組/円</th>
-                    <th @click="sortBy('Price')" :class="sortedClass('Price')">値段</th>
-                    <th @click="sortBy('Rolls')" :class="sortedClass('Rolls')">巻数</th>
-                    <th @click="sortBy('Meters')" :class="sortedClass('Meters')">m</th>
-                    <th @click="sortBy('SD')" :class="sortedClass('SD')">S/D</th>
-                    <th>削除</th>
-                </tr>
-            </thead>
+        <button @click="isOpened=!isOpened" class="title-button" :class="{ '_state-open': isOpened }">トイレットペーパー</button>
+        <div v-show="isOpened">
+            <p>値段<input type="number" v-model.number="price" min="1"></p>
+            <p>巻数<input type="number" v-model.number="rolls" min="1"></p>
+            <p>メートル<input type="number" v-model.number="meters" min="1"></p>
+            <input type="radio" id="single" value="シングル" v-model="picked">
+            <label for="single">シングル</label>
+            <input type="radio" id="double" value="ダブル" v-model="picked">
+            <label for="double">ダブル</label>
+            <p>1円あたりの長さ(数字が大きいほどお得)</p>
+            <p><button @click="addRow" class="small-button">+</button>{{ result }}m/円</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th @click="sortBy('CP')" :class="sortedClass('CP')">組/円</th>
+                        <th @click="sortBy('Price')" :class="sortedClass('Price')">値段</th>
+                        <th @click="sortBy('Rolls')" :class="sortedClass('Rolls')">巻数</th>
+                        <th @click="sortBy('Meters')" :class="sortedClass('Meters')">m</th>
+                        <th @click="sortBy('SD')" :class="sortedClass('SD')">S/D</th>
+                        <th>削除</th>
+                    </tr>
+                </thead>
 
-            <tbody>
-                <tr v-for="row in eventedAction">
-                    <td>{{row.CP}}</td>
-                    <td>{{row.Price}}</td>
-                    <td>{{row.Rolls}}</td>
-                    <td>{{row.Meters}}</td>
-                    <td>{{row.SD}}</td>
-                    <td><button v-on:click="delRow(row)">-</button></td>
-                </tr>
-            </tbody>
-        </table>
+                <tbody>
+                    <tr v-for="row in eventedAction">
+                        <td>{{row.CP}}</td>
+                        <td>{{row.Price}}</td>
+                        <td>{{row.Rolls}}</td>
+                        <td>{{row.Meters}}</td>
+                        <td>{{row.SD}}</td>
+                        <td><button @click="delRow(row)" class="small-button">-</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <script>
@@ -168,6 +174,7 @@
                 }
             },
             data: {
+                isOpened: false,
                 price: 4000,
                 total: 1000,
                 seibun: 20,
@@ -227,6 +234,7 @@
                 }
             },
             data: {
+                isOpened: false,
                 price: 300,
                 boxes: 5,
                 pairs: 150,
@@ -289,6 +297,7 @@
                 }
             },
             data: {
+                isOpened: false,
                 price: 500,
                 rolls: 12,
                 meters: 25,
