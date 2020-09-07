@@ -131,7 +131,7 @@
             computed: {
                 result: function() {
                     var cp = this.price / (this.total / this.seibun * this.nutrition);
-                    if (cp == 'Infinity') {
+                    if (isNaN(cp) || !isFinite(cp)) {
                         return 0;
                     } else {
                         return roundDigit(cp, 2);
@@ -192,7 +192,7 @@
             computed: {
                 result: function() {
                     var cp = this.boxes * this.pairs / this.price;
-                    if (cp == 'Infinity') {
+                    if (isNaN(cp) || !isFinite(cp)) {
                         return 0;
                     } else {
                         return roundDigit(cp, 2);
@@ -254,7 +254,7 @@
                     if (this.picked == 'ダブル') {
                         cp = cp * 2;
                     }
-                    if (cp == 'Infinity') {
+                    if (isNaN(cp) || !isFinite(cp)) {
                         return 0;
                     } else {
                         return roundDigit(cp, 2);
