@@ -143,7 +143,7 @@
                     if (isNaN(cp) || !isFinite(cp)) {
                         return 0;
                     } else {
-                        return roundDigit(cp, 2);
+                        return roundDigit(cp, 2, true);
                     }
                 },
                 eventedAction: function() {
@@ -217,7 +217,7 @@
                     if (isNaN(cp) || !isFinite(cp)) {
                         return 0;
                     } else {
-                        return roundDigit(cp, 2);
+                        return roundDigit(cp, 2, true);
                     }
                 },
                 eventedAction: function() {
@@ -292,7 +292,7 @@
                     if (isNaN(cp) || !isFinite(cp)) {
                         return 0;
                     } else {
-                        return roundDigit(cp, 2);
+                        return roundDigit(cp, 2, true);
                     }
                 },
                 eventedAction: function() {
@@ -353,10 +353,22 @@
          * 任意の桁で四捨五入する関数
          * @param {number} value 四捨五入する数値
          * @param {number} digit どの桁で四捨五入するか（1→小数点第1位, 2→小数点第2位, ...）
+         * @param {boolean} zeroPadding true:digitの桁数でゼロ埋めする false:しない
          * @return {number} 四捨五入した値
          */
-        function roundDigit(value, digit) {
-            return Math.round(value * Math.pow(10, digit)) / Math.pow(10, digit);
+        function roundDigit(value, digit, zeroPadding) {
+            var retval = Math.round(value * Math.pow(10, digit)) / Math.pow(10, digit);
+            if (retval == 0) return 0;
+            if (!zeroPadding) return retval;
+            var strdecimal = String(retval).split('.');
+            var decimaldigit = (strdecimal[1]) ? strdecimal[1].length : 0;
+            if (decimaldigit == 0) {
+                retval = retval + '.';
+            }
+            for (let i = 0; i < digit - decimaldigit; i++) {
+                retval = retval + '0';
+            }
+            return retval;
         }
     </script>
 </body>
