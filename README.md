@@ -1,2 +1,2 @@
-# Paper-Calculator
-ティッシュボックスとトイレットペーパーのコスパ計算機a
+# Cost Performance Calculator
+PWAとVue.jsを利用したコスパ計算機
