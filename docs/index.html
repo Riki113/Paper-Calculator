@@ -17,6 +17,7 @@
     <div id="appNutrition">
         <button @click="isOpened=!isOpened" class="title-button" :class="{ '_state-open': isOpened }">栄養</button>
         <div v-show="isOpened">
+            <p><input type="checkbox" v-model="checkedTax" id="taxN"><label for="taxN">税別</label>　税込{{ calcTax }}円</p>
             <p>値段<input type="number" v-model.number="price" min="1"></p>
             <p>内容量<input type="number" v-model.number="total" min="1"></p>
             <p>容量(成分表示)<input type="number" v-model.number="seibun" min="1"></p>
@@ -51,6 +52,7 @@
     <div id="appTissue">
         <button @click="isOpened=!isOpened" class="title-button" :class="{ '_state-open': isOpened }">ティッシュボックス</button>
         <div v-show="isOpened">
+            <p><input type="checkbox" v-model="checkedTax" id="taxTB"><label for="taxTB">税別</label>　税込{{ calcTax }}円</p>
             <p>値段<input type="number" v-model.number="price" min="1"></p>
             <p>箱数<input type="number" v-model.number="boxes" min="1"></p>
             <p>組数<input type="number" v-model.number="pairs" min="1"></p>
@@ -82,6 +84,7 @@
     <div id="appToipe">
         <button @click="isOpened=!isOpened" class="title-button" :class="{ '_state-open': isOpened }">トイレットペーパー</button>
         <div v-show="isOpened">
+            <p><input type="checkbox" v-model="checkedTax" id="taxTP"><label for="taxTP">税別</label>　税込{{ calcTax }}円</p>
             <p>値段<input type="number" v-model.number="price" min="1"></p>
             <p>巻数<input type="number" v-model.number="rolls" min="1"></p>
             <p>メートル<input type="number" v-model.number="meters" min="1"></p>
@@ -138,8 +141,16 @@
                 }
             },
             computed: {
+                calcTax: function() {
+                    if (!this.checkedTax) {
+                        this.taxin = this.price;
+                    } else {
+                        this.taxin = Math.round(this.price * 1.1);
+                    }
+                    return this.taxin;
+                },
                 result: function() {
-                    var cp = this.price / (this.total / this.seibun * this.nutrition);
+                    let cp = this.taxin / (this.total / this.seibun * this.nutrition);
                     if (isNaN(cp) || !isFinite(cp)) {
                         return 0;
                     } else {
@@ -171,7 +182,7 @@
                 addRow: function() {
                     this.items.push({
                         'CP': this.result,
-                        'Price': this.price,
+                        'Price': this.taxin,
                         'Total': this.total,
                         'Seibun': this.seibun,
                         'Nutrition': this.nutrition
@@ -187,8 +198,10 @@
                 }
             },
             data: {
+                checkedTax: false,
                 isOpened: false,
                 price: 4000,
+                taxin: 4000,
                 total: 1000,
                 seibun: 20,
                 nutrition: 15,
@@ -212,8 +225,16 @@
                 }
             },
             computed: {
+                calcTax: function() {
+                    if (!this.checkedTax) {
+                        this.taxin = this.price;
+                    } else {
+                        this.taxin = Math.round(this.price * 1.1);
+                    }
+                    return this.taxin;
+                },
                 result: function() {
-                    var cp = this.boxes * this.pairs / this.price;
+                    let cp = this.boxes * this.pairs / this.taxin;
                     if (isNaN(cp) || !isFinite(cp)) {
                         return 0;
                     } else {
@@ -245,7 +266,7 @@
                 addRow: function() {
                     this.items.push({
                         'CP': this.result,
-                        'Price': this.price,
+                        'Price': this.taxin,
                         'Boxes': this.boxes,
                         'Pairs': this.pairs
                     });
@@ -260,8 +281,10 @@
                 }
             },
             data: {
+                checkedTax: false,
                 isOpened: false,
                 price: 300,
+                taxin: 300,
                 boxes: 5,
                 pairs: 150,
                 items: items = [],
@@ -284,8 +307,16 @@
                 }
             },
             computed: {
+                calcTax: function() {
+                    if (!this.checkedTax) {
+                        this.taxin = this.price;
+                    } else {
+                        this.taxin = Math.round(this.price * 1.1);
+                    }
+                    return this.taxin;
+                },
                 result: function() {
-                    var cp = this.rolls * this.meters / this.price;
+                    let cp = this.rolls * this.meters / this.taxin;
                     if (this.picked == 'ダブル') {
                         cp = cp * 2;
                     }
@@ -320,7 +351,7 @@
                 addRow: function() {
                     this.items.push({
                         'CP': this.result,
-                        'Price': this.price,
+                        'Price': this.taxin,
                         'Rolls': this.rolls,
                         'Meters': this.meters,
                         'SD': this.picked
@@ -336,8 +367,10 @@
                 }
             },
             data: {
+                checkedTax: false,
                 isOpened: false,
                 price: 500,
+                taxin: 500,
                 rolls: 12,
                 meters: 25,
                 picked: 'ダブル',
